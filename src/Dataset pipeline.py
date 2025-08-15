@@ -3,7 +3,6 @@ import shutil
 import cv2
 from sklearn.model_selection import train_test_split
 from tqdm import tqdm
-
 def create_dataset_pipeline(source_dir, base_dir, image_size=(224, 224), val_ratio=0.20):
     """
     Augments train & test images separately.
