@@ -1,3 +1,9 @@
+import os
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+
 def visualize_dataset_distribution(dataset_dir, result_dir=None, data_type=None):
     """
     Given a dataset directory containing subfolders like:
@@ -19,10 +25,6 @@ def visualize_dataset_distribution(dataset_dir, result_dir=None, data_type=None)
     - result_dir: Directory to save the visualization (optional)
     - data_type: Dataset type identifier for filename (e.g., 'original', 'preprocessed') (optional)
     """
-    import os
-    import pandas as pd
-    import matplotlib.pyplot as plt
-    import seaborn as sns
     
     def count_files(directory):
         """Count number of images in each class folder."""

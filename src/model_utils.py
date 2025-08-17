@@ -1,7 +1,7 @@
 # model_utils.py
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 
-def setup_datagenerator(train_dir, val_dir, test_dir, preprocess_fn, batch_size=32, image_size=(224, 224)):
+def setup_datagenerator(train_dir, val_dir, test_dir, preprocess_fn, batch_size=36, image_size=(224, 224)):
     """
     Create and configure data generators for the model.
     
@@ -54,3 +54,36 @@ def setup_datagenerator(train_dir, val_dir, test_dir, preprocess_fn, batch_size=
     )
     
     return train_generator, validation_generator, test_generator
+
+ # Build the model 
+def build_model(base_model_class, preprocess_fn, num_classes, input_shape=(224, 224, 3)):
+    """Create a transfer learning model with the given base model"""
+    # Create the base model
+    base_model = base_model_class(
+        include_top=False, 
+        weights='imagenet',
+        input_shape=input_shape
+    )
+    
+    # Freeze the base model
+    base_model.trainable = False
+    
+    # Create new model on top
+    inputs = tf.keras.Input(shape=input_shape)
+    x = preprocess_fn(inputs)
+    x = base_model(x, training=False)
+    x = GlobalAveragePooling2D()(x)
+    x = Dense(1024, activation='relu')(x)
+    x = Dropout(0.5)(x)
+    outputs = Dense(num_classes, activation='softmax')(x)
+    
+    model = Model(inputs, outputs)
+    
+    # Compile the model
+    model.compile(
+        optimizer=Adam(learning_rate=0.001),
+        loss='categorical_crossentropy',
+        metrics=['accuracy']
+    )
+    
+    return model
