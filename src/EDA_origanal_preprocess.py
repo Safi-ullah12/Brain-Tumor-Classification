@@ -93,3 +93,33 @@ def visualize_dataset_distribution(dataset_dir, result_dir=None, data_type=None)
         print(f"Visualization saved to: {save_path}")
     
     plt.show()
+
+
+    #plot training history
+    
+def plot_training_history(history, model_name, save_dir):
+    """Plot training and validation accuracy/loss and save the figure"""
+    plt.figure(figsize=(12, 5))
+    
+    plt.subplot(1, 2, 1)
+    plt.plot(history.history['accuracy'], label='Training Accuracy')
+    plt.plot(history.history['val_accuracy'], label='Validation Accuracy')
+    plt.title(f'Training and Validation Accuracy - {model_name}')
+    plt.xlabel('Epoch')
+    plt.ylabel('Accuracy')
+    plt.legend()
+    
+    plt.subplot(1, 2, 2)
+    plt.plot(history.history['loss'], label='Training Loss')
+    plt.plot(history.history['val_loss'], label='Validation Loss')
+    plt.title(f'Training and Validation Loss - {model_name}')
+    plt.xlabel('Epoch')
+    plt.ylabel('Loss')
+    plt.legend()
+    
+    plt.tight_layout()
+    os.makedirs(save_dir, exist_ok=True)
+    save_path = os.path.join(save_dir, f'training_history_{model_name}.png')
+    plt.savefig(save_path, dpi=300)
+    plt.close()
+    print(f"Training history plot saved to {save_path}")
