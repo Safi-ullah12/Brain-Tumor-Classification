@@ -1,6 +1,6 @@
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
-from tensorflow.keras import Model
-from tensorflow.keras.layers import Dense, GlobalAveragePooling2D, Dropout
+from tensorflow.keras import Model,Input,regularizers
+from tensorflow.keras.layers import Dense, GlobalAveragePooling2D, Dropout,BatchNormalization
 from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.callbacks import ModelCheckpoint, EarlyStopping, ReduceLROnPlateau, TensorBoard
 import tensorflow as tf
@@ -24,13 +24,13 @@ model_configs = {
     "inceptionv3": {
         "model_class": InceptionV3,
         "preprocess_fn": inception_preprocess,
-        "inpu  # **Prepart the data for the models**t_shape": (299, 299, 3)  # Inception requires larger input
+        "input_shape": (299, 299, 3)  # Inception requires larger input
     }
 }
 
 
 
-def setup_datagenerator(train_dir, val_dir, test_dir, preprocess_fn, batch_size=36, image_size=(224, 224)):
+def setup_datagenerator(train_dir, val_dir, test_dir, preprocess_fn, batch_size=16, image_size=(224, 224)):
     """
     Create and configure data generators for the model.
     
@@ -49,7 +49,6 @@ def setup_datagenerator(train_dir, val_dir, test_dir, preprocess_fn, batch_size=
     """
     # Create data generators with appropriate preprocessing
     train_datagen = ImageDataGenerator(
-        rescale=1./255,
         preprocessing_function=preprocess_fn
     )
     
@@ -84,7 +83,7 @@ def setup_datagenerator(train_dir, val_dir, test_dir, preprocess_fn, batch_size=
     
     return train_generator, validation_generator, test_generator
 
- # Build the model 
+ # Build the model  
 def build_model(base_model_class, preprocess_fn, num_classes, input_shape=(224, 224, 3)):
     """Create a transfer learning model with the given base model"""
     # Create the base model
@@ -97,18 +96,33 @@ def build_model(base_model_class, preprocess_fn, num_classes, input_shape=(224, 
     # Freeze the base model
     base_model.trainable = False
     
-    # Create new model on top
-    inputs = tf.keras.Input(shape=input_shape)
+
+    inputs = Input(shape=input_shape)
     x = preprocess_fn(inputs)
-    x = base_model(x, training=False)
+    x = base_model(x, training=False) # Keep False to freeze base model initially
+
+# Feature extraction and regularization head
     x = GlobalAveragePooling2D()(x)
-    x = Dense(1024, activation='relu')(x)
+
+# Add BatchNormalization to stabilize and accelerate training
+    x = BatchNormalization()(x)
+
+# Use a smaller, regularized Dense layer
+    x = Dense(256, activation='relu', # 256 is often sufficient
+                 kernel_regularizer=regularizers.l2(1e-4))(x) # Small L2 penalty
     x = Dropout(0.5)(x)
+
+# Optional: Second smaller Dense layer for more capacity
+    x = Dense(128, activation='relu',
+                 kernel_regularizer=regularizers.l2(1e-4))(x)
+    x = Dropout(0.3)(x) # Slightly lower dropout
+
+# Final output layer
     outputs = Dense(num_classes, activation='softmax')(x)
-    
+
     model = Model(inputs, outputs)
     
-    # Compile the model
+    
     model.compile(
         optimizer=Adam(learning_rate=0.001),
         loss='categorical_crossentropy',
@@ -119,24 +133,9 @@ def build_model(base_model_class, preprocess_fn, num_classes, input_shape=(224, 
 
 
 # Train the model 
-def train_model(model_name, config, train_gen, val_gen, train_dir, validation_dir, test_dir, 
-                batch_size, num_classes, epochs=50):
-    """Train the specified model and return history and trained model"""
+def train_model(model_name, config, train_gen, val_gen,num_classes, epochs=50):
+    """Train the specified model using provided generators"""
     print(f"\nTraining model {model_name}.....")
-    
-    # Set up model-specific generators if input size differs
-    if config['input_shape'] != (224, 224, 3):
-        print(f"Using custom input shape: {config['input_shape']}")
-        custom_train_gen, custom_val_gen, _ = setup_datagenerator(
-            train_dir, validation_dir, test_dir,
-            config['preprocess_fn'], batch_size, config['input_shape'][:2]
-        )
-        train_data = custom_train_gen
-        val_data = custom_val_gen
-    else:
-        # Use the default generators
-        train_data = train_gen
-        val_data = val_gen
     
     # Build the model
     model = build_model(
@@ -157,7 +156,7 @@ def train_model(model_name, config, train_gen, val_gen, train_dir, validation_di
     
     early_stopping = EarlyStopping(
         monitor='val_loss',
-        patience=10,
+        patience=12,
         restore_best_weights=True,
         verbose=1
     )
@@ -170,12 +169,12 @@ def train_model(model_name, config, train_gen, val_gen, train_dir, validation_di
         verbose=1
     )
     
-    tensorboard = TensorBoard(log_dir=f'logs/{model_name}')
+    tensorboard = TensorBoard(log_dir=f'logs/experiment_N1/{model_name}')
     
     # Train the model
     history = model.fit(
-        train_data,
-        validation_data=val_data,
+        train_gen,
+        validation_data=val_gen,
         epochs=epochs,
         callbacks=[checkpoint, early_stopping, reduce_lr, tensorboard],
         verbose=1

@@ -8,15 +8,20 @@ from tensorflow.keras.applications.vgg16 import preprocess_input as vgg16_prepro
 
 def main():
     # Define  parameters directly in the script
-    source_dir = "path/to/your/source_dataset"  # Update with your actual path
-    base_dir = "path/to/your/processed_dataset"  # Update with your actual path
-    result_dir = "path/to/your/results"  # Update with your actual path
+    source_dir = "/content/drive/MyDrive/MRI_Orignal Data"  # Update with your actual path
+    base_dir = "/content/drive/MyDrive/my_project"  # Update with your actual path
+    result_dir = "/content/drive/MyDrive/my_project/results"  # Update with your actual path
     image_size = (224, 224)
     val_ratio = 0.10
     batch_size = 16
     data_type = "preprocessed"  # or "original"
     num_classes = 4
-    # Here we needed to call the orignal data distribution
+    print("\n" + "="*50)
+    print("Starting Dataset Visualization")
+    print("="*50)
+    visualize_dataset_distribution(dataset_dir=source_dir,
+                                   result_dir=result_dir,
+                                   data_type='original')
     
     print("="*50)
     print("Starting Dataset Processing Pipeline")
@@ -26,7 +31,7 @@ def main():
     pipeline_result = create_dataset_pipeline(
         source_dir=source_dir,
         base_dir=base_dir,
-        image_size=image_size,
+        image_size=(224, 224),  # Use standard size for processing
         val_ratio=val_ratio
     )
     
@@ -46,56 +51,73 @@ def main():
         data_type=data_type
     )
     
-    print("\n" + "="*50)
-    print("Setting up Data Generators")
-    print("="*50)
-    
-    # Create the generators with all required parameters
-    train_gen, val_gen, test_gen = setup_datagenerator(
-        train_dir=train_dir,
-        val_dir=val_dir,
-        test_dir=test_dir,
-        preprocess_fn=vgg16_preprocess
-        batch_size=batch_size,
-        image_size=image_size
-    )
-
-    # Train the modeels(VGG16,VGG19 and Inceptionv3)
+    # Train the models (VGG16, VGG19 and InceptionV3)
     model_scores = {}
-    for model_name, config in model_configs.items():
-
-         model, history = train_model(model_name=model_name,
-                                      config=config,
-                                      train_dir=train_gen,                                   val_gen=val_gen,
-                                      test_dir=test_gen,
-                                      num_classes=num_classes,
-                                      epochs=100)
-         # Plot the training history , and validation history to evaluate the model
-         print("ploting training and validation history")
-         plot_training_history(history=history,model_name=model_name,save_dir=result_dir)
-
-         tf.keras.backend.clear_session()
-         gc.collect()
-         
-         # ✅ Evaluate model
-         print("Evaluating model performance...")
-         class_names = list(train_gen.class_indices.keys())  # get class labels
-         test_accuracy, report = evaluate_model(model=model,
-                                           test_generator=test_gen,
-                                           model_name=model_name,
-                                           class_names=class_names,
-                                           save_dir=result_dir)
+    histories = {}
     
-    # Save score for later comparison
-         model_scores[model_name] = test_accuracy
-         
-                                      
+    for model_name, config in model_configs.items():
+        print(f"\n{'='*50}")
+        print(f"Training {model_name}")
+        print(f"{'='*50}")
+        
+        # Use model-specific image size
+        image_size = config['input_shape'][:2]
+        
+        # Create generators with model-specific preprocessing and size
+        train_gen, val_gen, test_gen = setup_datagenerator(
+            train_dir=train_dir,
+            val_dir=val_dir,
+            test_dir=test_dir,
+            preprocess_fn=config['preprocess_fn'],
+            batch_size=batch_size,
+            image_size=image_size
+        )
+        
+        # Train the model
+        model, history = train_model(
+            model_name=model_name,
+            config=config,
+            train_gen=train_gen,
+            val_gen=val_gen,
+            num_classes=num_classes,
+            epochs=100
+        )
+        
+        # Store history for plotting
+        histories[model_name] = history
+        
+        # Plot the training history
+        print("Plotting training and validation history")
+        plot_training_history(
+            history=history,
+            model_name=model_name,
+            save_dir=result_dir
+        )
+        
+        # Evaluate model
+        print("Evaluating model performance...")
+        class_names = list(train_gen.class_indices.keys())  # get class labels
+        test_accuracy, report = evaluate_model(
+            model=model,
+            test_generator=test_gen,
+            model_name=model_name,
+            class_names=class_names,
+            save_dir=result_dir
+        )
+        
+        # Save score for later comparison
+        model_scores[model_name] = test_accuracy
+        print("Model Report\n",report)
+        
+        # Clear memory
+        tf.keras.backend.clear_session()
+        gc.collect()
+    
+    # Compare models
     plot_model_comparison(model_scores, result_dir)
+    
     print("\n" + "="*50)
     print("Pipeline completed successfully!")
-    print(f"Processed dataset saved to: {base_dir}")
-    print(f"Visualization results saved to: {result_dir}")
-    print("="*50)
 
 
 if __name__ == "__main__":
