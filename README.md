@@ -134,8 +134,7 @@ Glioma class remains the hardest to identify — future work will improve this u
 
 🚀 How to Run
 # 1️⃣ Clone Repository
-git clone https://github.com/your-username/brain-tumor-classification.git
-cd brain-tumor-classification
+git clone https://github.com/Safi-ullah12/Brain-Tumor-Classification.git
 
 # 2️⃣ Install Dependencies
 pip install -r requirements.txt
