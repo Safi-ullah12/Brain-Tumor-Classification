@@ -1,0 +1,15 @@
+# === CORE MACHINE LEARNING ===
+tensorflow
+scikit-learn
+numpy
+pandas
+
+# === COMPUTER VISION ===
+opencv-python
+
+# === DATA VISUALIZATION ===
+matplotlib
+seaborn
+
+# === UTILITIES ===
+tqdm
