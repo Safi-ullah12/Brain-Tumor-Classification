@@ -151,6 +151,7 @@ pip install -r requirements.txt
 # 3️⃣ Run the Pipeline
 python main.py
 
+---
 ## 👤 Authors  
 
 **Safi Ullah**, **Tiamoor Yousaf**, **Aizaz Hussain**  
@@ -161,7 +162,3 @@ python main.py
 
 🔗 **Links:**  
 - [LinkedIn Profile](https://www.linkedin.com/in/safi-ullah-10bbb927a) 
-
----
-
-> 🧾 *This report and README were written by the author and refined with the assistance of ChatGPT to improve clarity, formatting, and presentation.*
