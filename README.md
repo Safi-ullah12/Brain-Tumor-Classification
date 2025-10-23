@@ -147,9 +147,19 @@ cd Brain-Tumor-Classification
 
 # 2️⃣ Install Dependencies
 pip install -r requirements.txt
-👤 Authors
-**Aizaz Hussain**
-**Tiamoor Yousaf**
-**Safi Ullah** 
- 
- 
+
+# 3️⃣ Run the Pipeline
+python main.py
+
+##👤 Authors
+
+Safi Ullah, Tiamoor Yousaf, Aizaz Hussain
+🎓 BSc Computer Science
+💡 Passionate about AI for Healthcare Innovation
+
+📧 safi60183@email.com
+
+🔗 LinkedIn
+ | GitHub
+
+🧾 This report and README were written by the author with assistance from ChatGPT for improved clarity and structure.
