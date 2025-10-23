@@ -152,13 +152,19 @@ pip install -r requirements.txt
 python main.py
 
 ---
+
 ## 👤 Authors  
 
 **Safi Ullah**, **Tiamoor Yousaf**, **Aizaz Hussain**  
+
 🎓 *BSc Computer Science*  
 💡 *Passionate about AI for Healthcare Innovation*  
 
 📧 **Email:** [safi60183@email.com](mailto:safi60183@email.com)  
 
 🔗 **Links:**  
-- [LinkedIn Profile](https://www.linkedin.com/in/safi-ullah-10bbb927a) 
+- [LinkedIn Profile](https://www.linkedin.com/in/safi-ullah-10bbb927a)  
+- [GitHub Demo Video](https://youtu.be/jDKTUj6JUYs?si=Oc7y5vp_ZbqnZo-k)  
+
+---
+
