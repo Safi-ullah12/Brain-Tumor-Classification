@@ -151,15 +151,17 @@ pip install -r requirements.txt
 # 3️⃣ Run the Pipeline
 python main.py
 
-##👤 Authors
+## 👤 Authors  
 
-Safi Ullah, Tiamoor Yousaf, Aizaz Hussain
-🎓 BSc Computer Science
-💡 Passionate about AI for Healthcare Innovation
+**Safi Ullah**, **Tiamoor Yousaf**, **Aizaz Hussain**  
+🎓 *BSc Computer Science*  
+💡 *Passionate about AI for Healthcare Innovation*  
 
-📧 safi60183@email.com
+📧 **Email:** [safi60183@email.com](mailto:safi60183@email.com)  
 
-🔗 LinkedIn
- | GitHub
+🔗 **Links:**  
+- [LinkedIn Profile](https://www.linkedin.com/in/safi-ullah-10bbb927a) 
 
-🧾 This report and README were written by the author with assistance from ChatGPT for improved clarity and structure.
+---
+
+> 🧾 *This report and README were written by the author and refined with the assistance of ChatGPT to improve clarity, formatting, and presentation.*
