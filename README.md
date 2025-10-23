@@ -147,24 +147,24 @@ cd Brain-Tumor-Classification
 
 # 2️⃣ Install Dependencies
 pip install -r requirements.txt
+## 🚀 How to Run  
+
+```bash
+# 1️⃣ Clone Repository
+git clone https://github.com/Safi-ullah12/Brain-Tumor-Classification.git
+cd Brain-Tumor-Classification
+
+# 2️⃣ Install Dependencies
+pip install -r requirements.txt
 
 # 3️⃣ Run the Pipeline
 python main.py
-
----
-
-## 👤 Authors  
-
-**Safi Ullah**, **Tiamoor Yousaf**, **Aizaz Hussain**  
-
-🎓 *BSc Computer Science*  
-💡 *Passionate about AI for Healthcare Innovation*  
-
-📧 **Email:** [safi60183@email.com](mailto:safi60183@email.com)  
-
-🔗 **Links:**  
-- [LinkedIn Profile](https://www.linkedin.com/in/safi-ullah-10bbb927a)  
-- [GitHub Demo Video](https://youtu.be/jDKTUj6JUYs?si=Oc7y5vp_ZbqnZo-k)  
-
----
+```
+## 👤 Authors
+**Aizaz Hussain**
+ **Tiamoor Yousaf**,
+ **Safi Ullah**
+  🎓 *BSc Computer Science*
+   💡 *Passionate about AI for Healthcare Innovation* 
+   📧 **Email:** [safi60183@email.com](mailto:safi60183@email.com) 🔗 **Links:** - [LinkedIn Profile](https://www.linkedin.com/in/safi-ullah-10bbb927a)
 
