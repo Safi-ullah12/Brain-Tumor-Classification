@@ -3,7 +3,6 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-
 def visualize_dataset_distribution(dataset_dir, result_dir=None, data_type=None):
     """
     Given a dataset directory containing subfolders like:
@@ -29,20 +28,21 @@ def visualize_dataset_distribution(dataset_dir, result_dir=None, data_type=None)
     def count_files(directory):
         """Count number of images in each class folder."""
         if directory is None or not os.path.isdir(directory):
-            return {}
+            return {}    
         counts = {}
         for class_name in sorted(os.listdir(directory)):
             class_path = os.path.join(directory, class_name)
             if os.path.isdir(class_path):
                 counts[class_name] = len(os.listdir(class_path))
-        return counts
+        return counts 
 
     # Detect splits
     splits = {}
     for split_name in ["train", "test", "validation", "val"]:
         split_path = os.path.join(dataset_dir, split_name)
         if os.path.isdir(split_path):
-            splits[split_name] = split_path
+            splits[split_name] = split_path 
+
 
     if not splits:
         print(f"No train/test/validation folders found inside {dataset_dir}")
@@ -50,7 +50,7 @@ def visualize_dataset_distribution(dataset_dir, result_dir=None, data_type=None)
 
     # Collect counts
     all_classes = set()
-    data = []
+    data = []     
     for split_name, split_path in splits.items():
         counts = count_files(split_path)
         all_classes.update(counts.keys())
